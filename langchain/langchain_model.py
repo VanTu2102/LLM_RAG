@@ -19,9 +19,17 @@ import os
 # ]
 # print(model.invoke(messages))
 
-from transformers import AutoTokenizer, AutoModelForCausalLM
+import requests
 
-tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3.1-8B")
-model = AutoModelForCausalLM.from_pretrained("meta-llama/Meta-Llama-3.1-8B")
+API_URL = "https://api-inference.huggingface.co/models/meta-llama/Meta-Llama-3.1-8B"
+headers = {"Authorization": "Bearer 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"}
 
-print(model)
+def query(payload):
+	response = requests.post(API_URL, headers=headers, json=payload)
+	return response.json()
+	
+output = query({
+	"inputs": "Can you please let us know more details about your ",
+})
+
+print(output)
