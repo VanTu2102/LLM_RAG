@@ -19,14 +19,17 @@ import os
 # ]
 # print(model.invoke(messages))
 
-from transformers import AutoTokenizer, AutoModelForCausalLM, AutoConfig
+import requests
 
-# Load the configuration and adjust the rope_scaling parameter
-config = AutoConfig.from_pretrained("meta-llama/Meta-Llama-3.1-8B")
-config.rope_scaling = {"type": "linear", "factor": config.rope_scaling["factor"]}  # Keep only 'type' and 'factor'
+API_URL = "https://api-inference.huggingface.co/models/meta-llama/Meta-Llama-3.1-8B"
+headers = {"Authorization": "Bearer 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"}
 
-# Load the tokenizer and model with the modified configuration
-tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3.1-8B")
-model = AutoModelForCausalLM.from_pretrained("meta-llama/Meta-Llama-3.1-8B", config=config)
+def query(payload):
+	response = requests.post(API_URL, headers=headers, json=payload)
+	return response.json()
+	
+output = query({
+	"inputs": "Can you please let us know more details about your ",
+})
 
-print(model)
+print(output)
